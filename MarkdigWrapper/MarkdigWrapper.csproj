@@ -81,23 +81,23 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="HtmlSanitizer">
-      <HintPath>..\packages\HtmlSanitizer.9.0.892\lib\net47\HtmlSanitizer.dll</HintPath>
+      <HintPath>..\packages\HtmlSanitizer.9.2.1039\lib\net47\HtmlSanitizer.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="AngleSharp">
-      <HintPath>..\packages\AngleSharp.0.17.1\lib\net472\AngleSharp.dll</HintPath>
+      <HintPath>..\packages\AngleSharp.1.7.2\lib\net462\AngleSharp.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="AngleSharp.Css">
-      <HintPath>..\packages\AngleSharp.Css.0.17.0\lib\netstandard2.0\AngleSharp.Css.dll</HintPath>
+      <HintPath>..\packages\AngleSharp.Css.1.0.2\lib\net462\AngleSharp.Css.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Collections.Immutable">
-      <HintPath>..\packages\System.Collections.Immutable.10.0.0\lib\net462\System.Collections.Immutable.dll</HintPath>
+      <HintPath>..\packages\System.Collections.Immutable.10.0.11\lib\net462\System.Collections.Immutable.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Text.Encoding.CodePages">
-      <HintPath>..\packages\System.Text.Encoding.CodePages.6.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
+      <HintPath>..\packages\System.Text.Encoding.CodePages.8.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
