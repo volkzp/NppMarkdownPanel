@@ -559,6 +559,12 @@ OUTLINE_SCRIPT_PLACEHOLDER
             }
         }
 
+        private void btnPrint_Click(object sender, EventArgs e)
+        {
+            if (webbrowserControl == null) return;
+            webbrowserControl.Print();
+        }
+
         private void btnExportToPdf_Click(object sender, EventArgs e)
         {
             ExportToPdf();

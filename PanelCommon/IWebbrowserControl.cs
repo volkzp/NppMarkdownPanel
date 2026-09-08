@@ -33,5 +33,7 @@ namespace PanelCommon
         void StopScrollPositionTracking();
 
         void ExportToPdf(string filePath);
+
+        void Print();
     }
 }

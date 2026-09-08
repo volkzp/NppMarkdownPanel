@@ -8,6 +8,7 @@ re-typesets formulas after live preview updates.
 - lightweight plugin to preview markdown within Notepad++
 - displaying rendered markdown HTML with **WebView2 Edge** (since 0.9.0) or an embedded IE11
 - can save rendered html to a file
+- print preview from the preview toolbar when using the WebView2 rendering engine
 - Dark mode support (_requires Notepad++ version 8.4.1 or later_)
 
 ### Current Version

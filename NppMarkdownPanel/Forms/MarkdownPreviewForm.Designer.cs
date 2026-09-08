@@ -37,6 +37,7 @@
             this.btnSaveWithLightTheme = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCopyToClipboard = new System.Windows.Forms.ToolStripButton();
             this.btnExportToPdf = new System.Windows.Forms.ToolStripButton();
+            this.btnPrint = new System.Windows.Forms.ToolStripButton();
             this.footerStatusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.panelPreview.SuspendLayout();
@@ -47,9 +48,9 @@
             this.tbPreview.SuspendLayout();
             this.footerStatusStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // panelPreview
-            // 
+            //
             this.panelPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelPreview.Controls.Add(this.toolStripContainer1);
             this.panelPreview.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -107,7 +108,8 @@
             this.tbPreview.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnSaveHtml,
             this.btnCopyToClipboard,
-            this.btnExportToPdf});
+            this.btnExportToPdf,
+            this.btnPrint});
             this.tbPreview.Location = new System.Drawing.Point(0, 0);
             this.tbPreview.Name = "tbPreview";
             this.tbPreview.Size = new System.Drawing.Size(811, 27);
@@ -151,7 +153,16 @@
             this.btnExportToPdf.Size = new System.Drawing.Size(124, 24);
             this.btnExportToPdf.Text = "Export to PDF";
             this.btnExportToPdf.Click += new System.EventHandler(this.btnExportToPdf_Click);
-            // 
+            //
+            // btnPrint
+            //
+            this.btnPrint.ImageTransparentColor = System.Drawing.Color.Black;
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(48, 24);
+            this.btnPrint.Text = "Print";
+            this.btnPrint.ToolTipText = "Print preview";
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
+            //
             // footerStatusStrip
             // 
             this.footerStatusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -208,5 +219,6 @@
         private System.Windows.Forms.ToolStripMenuItem btnSaveWithLightTheme;
         private System.Windows.Forms.ToolStripButton btnCopyToClipboard;
         private System.Windows.Forms.ToolStripButton btnExportToPdf;
+        private System.Windows.Forms.ToolStripButton btnPrint;
     }
 }

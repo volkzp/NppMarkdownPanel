@@ -467,5 +467,28 @@ namespace Webview2Viewer
             }));
         }
 
+        public void Print()
+        {
+            if (!IsInitialized()) return;
+            ExecuteWebviewAction(new Action(async () =>
+            {
+                try
+                {
+                    await webView.ExecuteScriptAsync(
+                        "window.typesetMath ? window.typesetMath(document.getElementById('outline-main') || document.body) : Promise.resolve();"
+                    );
+                    webView.CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind.Browser);
+                }
+                catch
+                {
+                    try
+                    {
+                        webView.CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind.System);
+                    }
+                    catch { }
+                }
+            }));
+        }
+
     }
 }
