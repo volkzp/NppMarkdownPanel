@@ -26,14 +26,26 @@ jobs:
            ./build.ps1
            ./makerelease.ps1
 
+    - name: Prepare directly installable workflow artifacts
+      shell: pwsh
+      run: |
+           New-Item -ItemType Directory -Path Artifacts/x86, Artifacts/x64 -Force | Out-Null
+           $x86 = Get-ChildItem -LiteralPath Release -Filter '*-x86.zip' -File
+           $x64 = Get-ChildItem -LiteralPath Release -Filter '*-x64.zip' -File
+           if ($x86.Count -ne 1 -or $x64.Count -ne 1) {
+               throw "Expected exactly one x86 and one x64 release archive."
+           }
+           Expand-Archive -LiteralPath $x86.FullName -DestinationPath Artifacts/x86
+           Expand-Archive -LiteralPath $x64.FullName -DestinationPath Artifacts/x64
+
     - name: Archive artifacts x86
       uses: actions/upload-artifact@v7
       with:
           name: NppMarkdownPanel_win32
-          path: Release/*-x86.zip
+          path: Artifacts/x86/*
 
     - name: Archive artifacts x64
       uses: actions/upload-artifact@v7
       with:
           name: NppMarkdownPanel_x64
-          path: Release/*-x64.zip
+          path: Artifacts/x64/*
