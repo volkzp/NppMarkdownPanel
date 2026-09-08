@@ -14,6 +14,12 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v3
 
+    - name: Test formula renderers and localization wiring
+      run: |
+           node tests/katex-smoke.js
+           node tests/localization-smoke.js
+           node tests/math-engine-settings-smoke.js
+
     - name: Build of plugin dll and zip
       working-directory: .
       run: |

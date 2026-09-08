@@ -106,6 +106,7 @@ namespace NppMarkdownPanel
             settings.AutoShowPanel = PluginUtils.ReadIniBool("Options", "AutoShowPanel", iniFilePath);
             settings.EnableThreeStateToggle = PluginUtils.ReadIniBool("Options", "EnableThreeStateToggle", iniFilePath);
             settings.RenderingEngine = Win32.ReadIniValue("Options", "RenderingEngine", iniFilePath, Settings.RENDERING_ENGINE_WEBVIEW2_EDGE);
+            settings.MathRenderingEngine = Win32.ReadIniValue("Options", "MathRenderingEngine", iniFilePath, Settings.MATH_RENDERING_ENGINE_KATEX);
             settings.ShowOutline = PluginUtils.ReadIniBool("Options", "ShowOutline", iniFilePath, false);
             return settings;
         }
@@ -436,6 +437,7 @@ namespace NppMarkdownPanel
                 settings.AutoShowPanel = settingsForm.AutoShowPanel;
                 settings.EnableThreeStateToggle = settingsForm.EnableThreeStateToggle;
                 settings.RenderingEngine = settingsForm.RenderingEngine;
+                settings.MathRenderingEngine = settingsForm.MathRenderingEngine;
 
                 settings.IsDarkModeEnabled = IsDarkModeEnabled();
                 viewerInterface.UpdateSettings(settings, OpenLocalFileInNpp);
@@ -526,6 +528,7 @@ namespace NppMarkdownPanel
             Win32.WriteIniValue("Options", "EnableThreeStateToggle", settings.EnableThreeStateToggle.ToString(), iniFilePath);
             Win32.WriteIniValue("Options", "AllowAllExtensions", settings.AllowAllExtensions.ToString(), iniFilePath);
             Win32.WriteIniValue("Options", "RenderingEngine", settings.RenderingEngine, iniFilePath);
+            Win32.WriteIniValue("Options", "MathRenderingEngine", settings.MathRenderingEngine, iniFilePath);
             Win32.WriteIniValue("Options", "ShowOutline", settings.ShowOutline.ToString(), iniFilePath);
         }
         private void ShowAboutDialog()

@@ -1,7 +1,9 @@
 # MarkdownPanel for Notepad++
 Plugin to preview Markdown files in Notepad++
 
-This fork adds offline LaTeX-style math rendering with bundled MathJax 3.2.2.
+This fork adds offline LaTeX-style math rendering with bundled KaTeX 0.16.22
+and MathJax 3.2.2. KaTeX is the default; the renderer can be selected in the
+plugin settings.
 It supports `$...$`, `$$...$$`, `\\(...\\)` and `\\[...\\]` delimiters and
 re-typesets formulas after live preview updates.
 The plugin interface switches between English and Russian together with the
@@ -15,7 +17,9 @@ Notepad++ interface language.
 
 ### Current Version
 
-The current version is **0.9.3** it can be found [here](https://github.com/mohzy83/NppMarkdownPanel/releases)
+The current fork version is **0.10.1**.
+
+The current upstream version is **0.9.3** and can be found [here](https://github.com/mohzy83/NppMarkdownPanel/releases).
 
 **Please update to version 0.9.3 due to security issuses with all previous versions of the plugin! (see Version-History for mor details)**
 
@@ -92,6 +96,11 @@ To open the settings for this plugin: Plugins -> MarkdownPanel -> Settings
 	due to its age.
 	
 	![settings-rendering](help/settings-rendering.png "settings Rendering")
+
+* #### Formula Rendering Engine
+	This option switches between **KaTeX** and **MathJax**. KaTeX is the default
+	because it renders faster. Select MathJax for documents that use TeX commands
+	not supported by KaTeX. Both engines are bundled and work offline.
 
 * #### CSS File
     This allows you to select a CSS file to use if you don't want the default style of the preview

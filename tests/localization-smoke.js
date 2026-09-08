@@ -15,9 +15,12 @@ assert.match(localization, /NPPM_GETNATIVELANGFILENAME/);
 assert.match(localization, /NPPM_GETCURRENTNATIVELANGENCODING/);
 assert.match(preview, /Просмотр Markdown/);
 assert.match(preview, /Предпросмотр печати/);
+assert.match(preview, /item\.AutoToolTip = false/);
+assert.match(preview, /tbPreview\.Invalidate\(true\)/);
 assert.match(preview, /Оглавление/);
 assert.match(settings, /Настройки панели Markdown/);
 assert.match(settings, /Автоматически открывать панель/);
+assert.match(settings, /Движок формул/);
 assert.match(controller, /NPPN_NATIVELANGCHANGED/);
 assert.match(controller, /Показать\/скрыть &панель/);
 

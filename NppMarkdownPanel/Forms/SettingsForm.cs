@@ -18,6 +18,7 @@ namespace NppMarkdownPanel.Forms
         public bool ShowStatusbar { get; set; }
         public bool EnableThreeStateToggle { get; set; }
         public string RenderingEngine { get; set; }
+        public string MathRenderingEngine { get; set; }
 
 
         public SettingsForm(Settings settings)
@@ -31,10 +32,12 @@ namespace NppMarkdownPanel.Forms
             AutoShowPanel = settings.AutoShowPanel;
             ShowStatusbar = settings.ShowStatusbar;
             RenderingEngine = settings.RenderingEngine;
+            MathRenderingEngine = settings.MathRenderingEngine;
             AllowAllExtensions = settings.AllowAllExtensions;
             SupportFilesWithNoExt = settings.SupportFilesWithNoExt;
             EnableThreeStateToggle = settings.EnableThreeStateToggle;
 
+            PluginLocalization.RefreshFromNotepad();
             InitializeComponent();
             PluginLocalization.LanguageChanged += ApplyLocalization;
             FormClosed += SettingsForm_FormClosed;
@@ -61,6 +64,8 @@ namespace NppMarkdownPanel.Forms
             {
                 comboRenderingEngine.SelectedIndex = 0;
             }
+
+            comboMathRenderingEngine.SelectedIndex = settings.IsMathRenderingEngineMathJax() ? 1 : 0;
         }
 
         private void ApplyLocalization()
@@ -74,6 +79,7 @@ namespace NppMarkdownPanel.Forms
             label4.Text = PluginLocalization.Text("Darkmode CSS File:", "CSS тёмной темы:");
             label5.Text = PluginLocalization.Text("Supported File Extensions:", "Расширения файлов:");
             label6.Text = PluginLocalization.Text("HTML Rendering Engine:", "Движок HTML:");
+            labelMathRenderingEngine.Text = PluginLocalization.Text("Formula Rendering Engine:", "Движок формул:");
             lblHtmlFile.Text = PluginLocalization.Text(
                 "Automatically Save\r\nHTML from Current\r\nPreview to this File:",
                 "Автоматически сохранять\r\nHTML предпросмотра\r\nв этот файл:");
@@ -261,6 +267,13 @@ namespace NppMarkdownPanel.Forms
             {
                 throw new NotSupportedException("Rendering Engine with id " + comboRenderingEngine.SelectedIndex + " not supported!");
             }
+        }
+
+        private void comboMathRenderingEngine_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MathRenderingEngine = comboMathRenderingEngine.SelectedIndex == 1
+                ? Settings.MATH_RENDERING_ENGINE_MATHJAX
+                : Settings.MATH_RENDERING_ENGINE_KATEX;
         }
 
         private void cbAllowAllExtensions_CheckedChanged(object sender, EventArgs e)

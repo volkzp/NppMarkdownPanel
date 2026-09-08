@@ -32,6 +32,7 @@ namespace Webview2Viewer
         private string currentDocumentPath;
 
         private bool currentPageHasOutline;
+        private string currentMathRenderer;
         private bool forceFullReload;
 
         private Action<string> openLocalFileInNppAction;
@@ -269,6 +270,13 @@ namespace Webview2Viewer
             }
             this.currentPageHasOutline = pageHasOutline;
 
+            var pageMathRenderer = content.Contains("content=\"mathjax\"") ? "mathjax" : "katex";
+            if (!fullReload && currentMathRenderer != null && currentMathRenderer != pageMathRenderer)
+            {
+                fullReload = true;
+            }
+            currentMathRenderer = pageMathRenderer;
+
             if (!fullReload && currentBody != null && currentStyle != null)
             {
                 if (currentBody != body)
@@ -278,7 +286,7 @@ namespace Webview2Viewer
                     {
                         await webView.ExecuteScriptAsync(
                             "(function(){var om=document.getElementById('outline-main');var root=om||document.body;" +
-                            "if(window.MathJax&&MathJax.typesetClear){MathJax.typesetClear([root]);}" +
+                            "if(window.clearTypesetMath)window.clearTypesetMath(root);" +
                             "root.innerHTML='" + HttpUtility.JavaScriptStringEncode(currentBody) + "';" +
                             "if(om&&window.buildOutline)window.buildOutline();" +
                             "if(window.typesetMath)window.typesetMath(root);})();" +

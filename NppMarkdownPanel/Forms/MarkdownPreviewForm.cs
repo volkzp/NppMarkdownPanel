@@ -30,7 +30,7 @@ namespace NppMarkdownPanel.Forms
                     <script>
                     if(typeof mermaid!=='undefined'){{mermaid.initialize({{ startOnLoad: false }});}}
                     </script>
-MATHJAX_HEAD_PLACEHOLDER
+MATH_RENDERER_HEAD_PLACEHOLDER
                 </head>
                 <body class=""markdown-body"" style=""{2}"">
                 {3}
@@ -56,7 +56,7 @@ MATHJAX_HEAD_PLACEHOLDER
                     <script>
                     if(typeof mermaid!=='undefined'){{mermaid.initialize({{ startOnLoad: false }});}}
                     </script>
-MATHJAX_HEAD_PLACEHOLDER
+MATH_RENDERER_HEAD_PLACEHOLDER
                 </head>
                 <body class=""outline-enabled"" style=""{2}"">
                     <nav id=""outline-sidebar"" class=""outline-sidebar"">
@@ -75,6 +75,7 @@ OUTLINE_SCRIPT_PLACEHOLDER
             ";
 
         const string MATHJAX_HEAD = @"
+                    <meta name=""npp-math-renderer"" content=""mathjax""></meta>
                     <script>
                     window.MathJax = {
                         tex: {
@@ -94,6 +95,33 @@ OUTLINE_SCRIPT_PLACEHOLDER
                             .then(function() { return MathJax.typesetPromise([root]); })
                             .catch(function(error) { console.error('MathJax typesetting failed:', error); });
                     };
+                    window.clearTypesetMath = function(root) {
+                        if (root && window.MathJax && MathJax.typesetClear) MathJax.typesetClear([root]);
+                    };
+                    </script>";
+
+        const string KATEX_HEAD = @"
+                    <meta name=""npp-math-renderer"" content=""katex""></meta>
+                    <style>KATEX_CSS_PLACEHOLDER</style>
+                    <script>KATEX_SCRIPT_PLACEHOLDER</script>
+                    <script>KATEX_AUTO_RENDER_SCRIPT_PLACEHOLDER</script>
+                    <script>
+                    window.typesetMath = function(root) {
+                        if (!root || typeof renderMathInElement === 'undefined') return;
+                        renderMathInElement(root, {
+                            delimiters: [
+                                {left: '$$', right: '$$', display: true},
+                                {left: '\\[', right: '\\]', display: true},
+                                {left: '\\(', right: '\\)', display: false},
+                                {left: '$', right: '$', display: false}
+                            ],
+                            ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+                            ignoredClasses: ['no-math'],
+                            throwOnError: false,
+                            strict: 'warn'
+                        });
+                    };
+                    window.clearTypesetMath = function(root) {};
                     </script>";
 
         const string OUTLINE_SCRIPT = @"<script>
@@ -249,6 +277,7 @@ OUTLINE_SCRIPT_PLACEHOLDER
 
         private MarkdownPreviewForm(Settings settings, ActionRef<Message> wndProcCallback)
         {
+            PluginLocalization.RefreshFromNotepad();
             InitializeComponent();
             PluginLocalization.LanguageChanged += ApplyLocalization;
             ApplyLocalization();
@@ -315,7 +344,7 @@ OUTLINE_SCRIPT_PLACEHOLDER
                     PluginLocalization.Text(MSG_NO_SUPPORTED_FILE_EXT, MSG_NO_SUPPORTED_FILE_EXT_RU),
                     Path.GetFileName(filepath),
                     settings.SupportedFileExt);
-                var invalidExtensionMessage = InjectMathJax(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, invalidExtensionMessageBody));
+                var invalidExtensionMessage = InjectMathRenderer(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, invalidExtensionMessageBody));
                 if (settings.ShowOutline)
                     invalidExtensionMessage = InjectOutlineScript(invalidExtensionMessage);
 
@@ -325,9 +354,9 @@ OUTLINE_SCRIPT_PLACEHOLDER
             var resultForBrowser = markdownService.ConvertToHtml(currentText, filepath, true);
             var resultForExport = markdownService.ConvertToHtml(currentText, null, false);
 
-            var markdownHtmlBrowser = InjectMathJax(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, resultForBrowser));
-            var markdownHtmlFileExport = InjectMathJax(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, resultForExport));
-            var markdownHtmlFileExportWithLightTheme = InjectMathJax(string.Format(htmlTemplate, Path.GetFileName(filepath), GetCssContent(true), defaultBodyStyle, resultForExport));
+            var markdownHtmlBrowser = InjectMathRenderer(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, resultForBrowser));
+            var markdownHtmlFileExport = InjectMathRenderer(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, resultForExport));
+            var markdownHtmlFileExportWithLightTheme = InjectMathRenderer(string.Format(htmlTemplate, Path.GetFileName(filepath), GetCssContent(true), defaultBodyStyle, resultForExport));
 
             if (settings.ShowOutline)
             {
@@ -339,21 +368,57 @@ OUTLINE_SCRIPT_PLACEHOLDER
             return new RenderResult(markdownHtmlBrowser, markdownHtmlFileExport, resultForBrowser, markdownStyleContent, markdownHtmlFileExportWithLightTheme);
         }
 
-        private static string InjectMathJax(string html)
+        private string InjectMathRenderer(string html)
         {
-            var mathJaxHead = MATHJAX_HEAD.Replace("MATHJAX_SCRIPT_PLACEHOLDER", MathJaxAssets.Script);
-            return LocalizeHtml(html.Replace("MATHJAX_HEAD_PLACEHOLDER", mathJaxHead));
+            string rendererHead;
+            if (settings.IsMathRenderingEngineMathJax())
+            {
+                rendererHead = MATHJAX_HEAD.Replace("MATHJAX_SCRIPT_PLACEHOLDER", MathJaxAssets.Script);
+            }
+            else
+            {
+                var assets = KaTeXAssets.Current;
+                rendererHead = KATEX_HEAD
+                    .Replace("KATEX_CSS_PLACEHOLDER", assets.Css)
+                    .Replace("KATEX_SCRIPT_PLACEHOLDER", assets.KatexScript)
+                    .Replace("KATEX_AUTO_RENDER_SCRIPT_PLACEHOLDER", assets.AutoRenderScript);
+            }
+
+            return LocalizeHtml(html.Replace("MATH_RENDERER_HEAD_PLACEHOLDER", rendererHead));
         }
 
         private void ApplyLocalization()
         {
-            Text = PluginLocalization.Text("Markdown Preview", "Просмотр Markdown");
-            btnSaveHtml.Text = PluginLocalization.Text("Save As...", "Сохранить как...");
-            btnSaveWithLightTheme.Text = PluginLocalization.Text("Save As (with Light Theme)", "Сохранить со светлой темой");
-            btnCopyToClipboard.Text = PluginLocalization.Text("Copy To Clipboard", "Копировать в буфер обмена");
-            btnExportToPdf.Text = PluginLocalization.Text("Export to PDF", "Экспорт в PDF");
-            btnPrint.Text = PluginLocalization.Text("Print", "Печать");
-            btnPrint.ToolTipText = PluginLocalization.Text("Print preview", "Предпросмотр печати");
+            tbPreview.SuspendLayout();
+            try
+            {
+                Text = PluginLocalization.Text("Markdown Preview", "Просмотр Markdown");
+                SetToolbarText(btnSaveHtml, "Save As...", "Сохранить как...");
+                SetToolbarText(btnSaveWithLightTheme, "Save As (with Light Theme)", "Сохранить со светлой темой");
+                SetToolbarText(btnCopyToClipboard, "Copy To Clipboard", "Копировать в буфер обмена");
+                SetToolbarText(btnExportToPdf, "Export to PDF", "Экспорт в PDF");
+                SetToolbarText(btnPrint, "Print", "Печать", "Print preview", "Предпросмотр печати");
+            }
+            finally
+            {
+                tbPreview.ResumeLayout(true);
+                tbPreview.PerformLayout();
+                tbPreview.Invalidate(true);
+                tbPreview.Update();
+            }
+        }
+
+        private static void SetToolbarText(ToolStripItem item, string english, string russian)
+        {
+            SetToolbarText(item, english, russian, english, russian);
+        }
+
+        private static void SetToolbarText(ToolStripItem item, string english, string russian, string englishTooltip, string russianTooltip)
+        {
+            var localizedText = PluginLocalization.Text(english, russian);
+            item.AutoToolTip = false;
+            item.Text = localizedText;
+            item.ToolTipText = PluginLocalization.Text(englishTooltip, russianTooltip);
         }
 
         private static string LocalizeHtml(string html)

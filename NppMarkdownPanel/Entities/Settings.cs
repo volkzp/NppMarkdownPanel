@@ -15,7 +15,14 @@ namespace NppMarkdownPanel.Entities
         public const string RENDERING_ENGINE_WEBVIEW1_IE11 = "IE11";
         public const string RENDERING_ENGINE_WEBVIEW2_EDGE = "EDGE";
 
-        public Settings() { RenderingEngine = RENDERING_ENGINE_WEBVIEW2_EDGE; }
+        public const string MATH_RENDERING_ENGINE_KATEX = "KATEX";
+        public const string MATH_RENDERING_ENGINE_MATHJAX = "MATHJAX";
+
+        public Settings()
+        {
+            RenderingEngine = RENDERING_ENGINE_WEBVIEW2_EDGE;
+            MathRenderingEngine = MATH_RENDERING_ENGINE_KATEX;
+        }
 
         public string CssFileName { get; set; }
         public string CssDarkModeFileName { get; set; }
@@ -37,6 +44,7 @@ namespace NppMarkdownPanel.Entities
         public string PostProcessorArguments { get; set; }
 
         public string RenderingEngine { get; set; }
+        public string MathRenderingEngine { get; set; }
 
         public bool IsRenderingEngineIE11()
         {
@@ -46,6 +54,16 @@ namespace NppMarkdownPanel.Entities
         public bool IsRenderingEngineEdge()
         {
             return RenderingEngine == RENDERING_ENGINE_WEBVIEW2_EDGE;
+        }
+
+        public bool IsMathRenderingEngineMathJax()
+        {
+            return String.Equals(MathRenderingEngine, MATH_RENDERING_ENGINE_MATHJAX, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public bool IsMathRenderingEngineKaTeX()
+        {
+            return !IsMathRenderingEngineMathJax();
         }
 
     }
