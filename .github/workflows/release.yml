@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v3
+
+      - name: Test formula renderers and localization wiring
+        run: |
+          node tests/katex-smoke.js
+          node tests/localization-smoke.js
+          node tests/math-engine-settings-smoke.js
+
+      - name: Build release packages
+        shell: pwsh
+        run: |
+          ./build.ps1
+          ./makerelease.ps1
+
+      - name: Publish ZIP files as release assets
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $assets = @(Get-ChildItem -LiteralPath Release -Filter '*.zip' -File |
+              ForEach-Object { $_.FullName })
+
+          if ($assets.Count -ne 2) {
+              throw "Expected two release ZIP files, found $($assets.Count)."
+          }
+
+          gh release view $tag --repo $env:GITHUB_REPOSITORY *> $null
+          if ($LASTEXITCODE -eq 0) {
+              gh release upload $tag @assets --clobber --repo $env:GITHUB_REPOSITORY
+          }
+          else {
+              $arguments = @(
+                  'release', 'create', $tag
+                  '--verify-tag'
+                  '--generate-notes'
+                  '--title', "NppMarkdownPanel $tag"
+                  '--repo', $env:GITHUB_REPOSITORY
+              )
+              if ($tag.Contains('-')) {
+                  $arguments += '--prerelease'
+              }
+              $arguments += $assets
+              & gh @arguments
+          }
+
+          if ($LASTEXITCODE -ne 0) {
+              throw "GitHub Release publication failed with exit code $LASTEXITCODE."
+          }
