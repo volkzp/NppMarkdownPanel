@@ -372,7 +372,6 @@ namespace NppMarkdownPanel
 
         public void InitCommandMenu()
         {
-            PluginLocalization.RefreshFromNotepad();
             syncViewWithCaretPosition = (Win32.GetPrivateProfileInt("Options", "SyncViewWithCaretPosition", 0, iniFilePath) != 0);
             syncViewWithFirstVisibleLine = (Win32.GetPrivateProfileInt("Options", "SyncWithFirstVisibleLine", 0, iniFilePath) != 0);
             showOutline = PluginUtils.ReadIniBool("Options", "ShowOutline", iniFilePath, false);

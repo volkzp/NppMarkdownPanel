@@ -274,7 +274,6 @@ OUTLINE_SCRIPT_PLACEHOLDER
 
         private MarkdownPreviewForm(Settings settings, ActionRef<Message> wndProcCallback)
         {
-            PluginLocalization.RefreshFromNotepad();
             InitializeComponent();
             PluginLocalization.LanguageChanged += ApplyLocalization;
             ApplyLocalization();

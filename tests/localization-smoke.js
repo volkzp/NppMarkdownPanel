@@ -24,7 +24,8 @@ const sourceFiles = [
 assert.deepEqual(keys(russian), keys(english), 'English and Russian key sets differ');
 assert.match(localization, /Path\.Combine\(assemblyDirectory, "localization", language \+ "\.xml"\)/);
 assert.match(localization, /NPPM_GETNATIVELANGFILENAME/);
-assert.match(localization, /NPPM_GETCURRENTNATIVELANGENCODING/);
+assert.match(localization, /SendMessageAnsi/);
+assert.doesNotMatch(localization, /NPPM_GETCURRENTNATIVELANGENCODING/);
 assert.match(russian, /Предпросмотр печати/);
 assert.match(russian, /Движок формул/);
 
@@ -40,5 +41,13 @@ for (const key of referencedKeys) {
 assert.ok(sourceFiles.every(source => !/[А-Яа-яЁё]/.test(source)), 'C# UI source still contains inline Russian text');
 assert.match(sourceFiles[1], /item\.AutoToolTip = false/);
 assert.match(sourceFiles[1], /tbPreview\.Invalidate\(true\)/);
+assert.doesNotMatch(
+    sourceFiles[1].match(/private MarkdownPreviewForm\([\s\S]*?\n        }/)[0],
+    /RefreshFromNotepad/,
+    'The preview constructor must not query native language before NPPN_READY');
+assert.doesNotMatch(
+    sourceFiles[3].match(/public void InitCommandMenu\(\)[\s\S]*?\n        }/)[0],
+    /RefreshFromNotepad/,
+    'setInfo must not query native language before NPPN_READY');
 
 console.log(`External English/Russian localization passed for ${definedKeys.size} keys.`);

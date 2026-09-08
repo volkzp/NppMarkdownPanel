@@ -11,7 +11,6 @@ namespace NppMarkdownPanel
 {
     internal static class PluginLocalization
     {
-        private const int RussianCodePage = 1251;
         private static readonly Dictionary<string, string> english = LoadLanguage("english");
         private static Dictionary<string, string> current = english;
 
@@ -34,21 +33,7 @@ namespace NppMarkdownPanel
         public static void RefreshFromNotepad()
         {
             string nativeLanguage = GetNativeLanguageFileName();
-            bool isRussian;
-
-            if (!String.IsNullOrWhiteSpace(nativeLanguage))
-            {
-                isRussian = nativeLanguage.StartsWith("russian", StringComparison.OrdinalIgnoreCase);
-            }
-            else
-            {
-                int codePage = Win32.SendMessage(
-                    PluginBase.nppData._nppHandle,
-                    (uint)NppMsg.NPPM_GETCURRENTNATIVELANGENCODING,
-                    IntPtr.Zero,
-                    IntPtr.Zero).ToInt32();
-                isRussian = codePage == RussianCodePage;
-            }
+            bool isRussian = nativeLanguage.StartsWith("russian", StringComparison.OrdinalIgnoreCase);
 
             if (IsRussian == isRussian) return;
 
@@ -83,14 +68,21 @@ namespace NppMarkdownPanel
 
         private static string GetNativeLanguageFileName()
         {
-            IntPtr nppHandle = PluginBase.nppData._nppHandle;
-            uint message = (uint)NppMsg.NPPM_GETNATIVELANGFILENAME;
-            int length = Win32.SendMessage(nppHandle, message, IntPtr.Zero, IntPtr.Zero).ToInt32();
-            if (length <= 0) return String.Empty;
+            try
+            {
+                IntPtr nppHandle = PluginBase.nppData._nppHandle;
+                uint message = (uint)NppMsg.NPPM_GETNATIVELANGFILENAME;
+                int length = Win32.SendMessage(nppHandle, message, IntPtr.Zero, IntPtr.Zero).ToInt32();
+                if (length <= 0) return String.Empty;
 
-            var buffer = new StringBuilder(length + 1);
-            Win32.SendMessage(nppHandle, message, length + 1, buffer);
-            return buffer.ToString();
+                var buffer = new StringBuilder(length + 1);
+                Win32.SendMessageAnsi(nppHandle, message, new IntPtr(length + 1), buffer);
+                return buffer.ToString();
+            }
+            catch
+            {
+                return String.Empty;
+            }
         }
     }
 }

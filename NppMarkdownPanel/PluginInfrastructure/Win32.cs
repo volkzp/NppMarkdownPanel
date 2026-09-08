@@ -107,6 +107,11 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
         [DllImport("user32")]
         public static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder lParam);
 
+        // NPPM_GETNATIVELANGFILENAME explicitly returns a narrow char buffer,
+        // unlike most Notepad++ messages that use wchar_t strings.
+        [DllImport("user32", EntryPoint = "SendMessageA", CharSet = CharSet.Ansi)]
+        public static extern IntPtr SendMessageAnsi(IntPtr hWnd, UInt32 Msg, IntPtr wParam, [Out] StringBuilder lParam);
+
         /// <summary>
         /// You should try to avoid calling this method in your plugin code. Rather use one of the gateways such as 
         /// <see cref="ScintillaGateway"/> or <see cref="NotepadPPGateway"/>.  
