@@ -1,5 +1,6 @@
 ﻿// NPP plugin platform for .Net v0.94.00 by Kasper B. Graversen etc.
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using Kbg.NppPluginNET.PluginInfrastructure;
 using NppMarkdownPanel;
@@ -18,8 +19,25 @@ namespace Kbg.NppPluginNET
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static void setInfo(NppData notepadPlusData)
         {
-            PluginBase.nppData = notepadPlusData;
-            Main.CommandMenuInit();
+            try
+            {
+                PluginBase.nppData = notepadPlusData;
+                Main.CommandMenuInit();
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    File.WriteAllText(
+                        Path.Combine(Path.GetTempPath(), "NppMarkdownPanel-load-error.log"),
+                        ex.ToString());
+                }
+                catch
+                {
+                    // Never replace the original startup exception with a logging failure.
+                }
+                throw;
+            }
         }
 
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
