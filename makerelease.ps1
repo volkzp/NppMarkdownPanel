@@ -35,11 +35,13 @@ function New-ReleaseZip([string]$platform, [string]$outputFolder) {
     Copy-ReleaseDirectory (Join-Path $PSScriptRoot 'NppMarkdownPanel\katex') (Join-Path $staging 'katex')
     Copy-ReleaseDirectory (Join-Path $PSScriptRoot 'NppMarkdownPanel\localization') (Join-Path $staging 'localization')
 
+    # The helper projects target AnyCPU, so both plugin architectures use the
+    # same Release output. Only NppMarkdownPanel.dll has separate x86/x64 paths.
     foreach ($project in @('MarkdigWrapper', 'PanelCommon', 'Webview2Viewer')) {
-        $projectOutput = Join-Path $PSScriptRoot "$project\bin\$outputFolder"
+        $projectOutput = Join-Path $PSScriptRoot "$project\bin\Release"
         Get-ChildItem -LiteralPath $projectOutput -Filter '*.dll' -File | Copy-Item -Destination $lib -Force
     }
-    Copy-ReleaseDirectory (Join-Path $PSScriptRoot "Webview2Viewer\bin\$outputFolder\runtimes") (Join-Path $lib 'runtimes')
+    Copy-ReleaseDirectory (Join-Path $PSScriptRoot 'Webview2Viewer\bin\Release\runtimes') (Join-Path $lib 'runtimes')
 
     $version = (Get-Item -LiteralPath $pluginDll).VersionInfo.FileVersion
     $zipPath = Join-Path $releaseRoot "NppMarkdownPanel-$version-$platform.zip"
