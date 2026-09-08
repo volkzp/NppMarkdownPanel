@@ -184,9 +184,6 @@ OUTLINE_SCRIPT_PLACEHOLDER
 })();
 </script>";
 
-        const string MSG_NO_SUPPORTED_FILE_EXT = "<h3>The current file <u>{0}</u> has no valid Markdown file extension.</h3><div>Valid file extensions: {1}</div>";
-        const string MSG_NO_SUPPORTED_FILE_EXT_RU = "<h3>Файл <u>{0}</u> имеет неподдерживаемое расширение.</h3><div>Допустимые расширения: {1}</div>";
-
         private Task<RenderResult> renderTask;
         private int renderGeneration;
 
@@ -340,8 +337,8 @@ OUTLINE_SCRIPT_PLACEHOLDER
 
             if (!IsValidFileExtension(currentFilePath))
             {
-                var invalidExtensionMessageBody = string.Format(
-                    PluginLocalization.Text(MSG_NO_SUPPORTED_FILE_EXT, MSG_NO_SUPPORTED_FILE_EXT_RU),
+                var invalidExtensionMessageBody = PluginLocalization.Format(
+                    "preview.unsupported_extension",
                     Path.GetFileName(filepath),
                     settings.SupportedFileExt);
                 var invalidExtensionMessage = InjectMathRenderer(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, invalidExtensionMessageBody));
@@ -392,12 +389,12 @@ OUTLINE_SCRIPT_PLACEHOLDER
             tbPreview.SuspendLayout();
             try
             {
-                Text = PluginLocalization.Text("Markdown Preview", "Просмотр Markdown");
-                SetToolbarText(btnSaveHtml, "Save As...", "Сохранить как...");
-                SetToolbarText(btnSaveWithLightTheme, "Save As (with Light Theme)", "Сохранить со светлой темой");
-                SetToolbarText(btnCopyToClipboard, "Copy To Clipboard", "Копировать в буфер обмена");
-                SetToolbarText(btnExportToPdf, "Export to PDF", "Экспорт в PDF");
-                SetToolbarText(btnPrint, "Print", "Печать", "Print preview", "Предпросмотр печати");
+                Text = PluginLocalization.Text("preview.title");
+                SetToolbarText(btnSaveHtml, "preview.save_as");
+                SetToolbarText(btnSaveWithLightTheme, "preview.save_light");
+                SetToolbarText(btnCopyToClipboard, "preview.copy");
+                SetToolbarText(btnExportToPdf, "preview.export_pdf");
+                SetToolbarText(btnPrint, "preview.print", "preview.print_preview");
             }
             finally
             {
@@ -408,17 +405,11 @@ OUTLINE_SCRIPT_PLACEHOLDER
             }
         }
 
-        private static void SetToolbarText(ToolStripItem item, string english, string russian)
+        private static void SetToolbarText(ToolStripItem item, string textKey, string tooltipKey = null)
         {
-            SetToolbarText(item, english, russian, english, russian);
-        }
-
-        private static void SetToolbarText(ToolStripItem item, string english, string russian, string englishTooltip, string russianTooltip)
-        {
-            var localizedText = PluginLocalization.Text(english, russian);
             item.AutoToolTip = false;
-            item.Text = localizedText;
-            item.ToolTipText = PluginLocalization.Text(englishTooltip, russianTooltip);
+            item.Text = PluginLocalization.Text(textKey);
+            item.ToolTipText = PluginLocalization.Text(tooltipKey ?? textKey);
         }
 
         private static string LocalizeHtml(string html)
@@ -427,8 +418,8 @@ OUTLINE_SCRIPT_PLACEHOLDER
 
             return html
                 .Replace("@@NPP_LANG@@", PluginLocalization.IsRussian ? "ru" : "en")
-                .Replace("@@OUTLINE_TEXT@@", PluginLocalization.Text("Outline", "Оглавление"))
-                .Replace("@@OUTLINE_TITLE@@", PluginLocalization.Text("Toggle outline", "Показать или скрыть оглавление"));
+                .Replace("@@OUTLINE_TEXT@@", PluginLocalization.Text("preview.outline"))
+                .Replace("@@OUTLINE_TITLE@@", PluginLocalization.Text("preview.toggle_outline"));
         }
 
         private string GetCssContent(bool forceLightTheme = false)
@@ -553,9 +544,7 @@ OUTLINE_SCRIPT_PLACEHOLDER
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = PluginLocalization.Text(
-                    "HTML files (*.html, *.htm)|*.html;*.htm|All files (*.*)|*.*",
-                    "Файлы HTML (*.html, *.htm)|*.html;*.htm|Все файлы (*.*)|*.*");
+                saveFileDialog.Filter = PluginLocalization.Text("filter.html");
                 saveFileDialog.RestoreDirectory = true;
                 saveFileDialog.InitialDirectory = Path.GetDirectoryName(currentFilePath);
                 saveFileDialog.FileName = Path.GetFileNameWithoutExtension(currentFilePath);
@@ -644,7 +633,7 @@ OUTLINE_SCRIPT_PLACEHOLDER
 
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = PluginLocalization.Text("PDF files (*.pdf)|*.pdf", "Файлы PDF (*.pdf)|*.pdf");
+                saveFileDialog.Filter = PluginLocalization.Text("filter.pdf");
                 saveFileDialog.RestoreDirectory = true;
                 saveFileDialog.InitialDirectory = Path.GetDirectoryName(currentFilePath);
                 saveFileDialog.FileName = Path.GetFileNameWithoutExtension(currentFilePath);

@@ -33,6 +33,7 @@ function New-ReleaseZip([string]$platform, [string]$outputFolder) {
     Copy-ReleaseDirectory (Join-Path $PSScriptRoot 'help') (Join-Path $staging 'help')
     Copy-ReleaseDirectory (Join-Path $PSScriptRoot 'NppMarkdownPanel\mathjax') (Join-Path $staging 'mathjax')
     Copy-ReleaseDirectory (Join-Path $PSScriptRoot 'NppMarkdownPanel\katex') (Join-Path $staging 'katex')
+    Copy-ReleaseDirectory (Join-Path $PSScriptRoot 'NppMarkdownPanel\localization') (Join-Path $staging 'localization')
 
     foreach ($project in @('MarkdigWrapper', 'PanelCommon', 'Webview2Viewer')) {
         $projectOutput = Join-Path $PSScriptRoot "$project\bin\$outputFolder"

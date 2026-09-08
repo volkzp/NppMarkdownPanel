@@ -9,6 +9,9 @@ re-typesets formulas after live preview updates.
 The plugin interface switches between English and Russian together with the
 Notepad++ interface language.
 
+Interface strings are stored separately in `NppMarkdownPanel/localization`.
+Both language files must contain the same keys; English is used as the fallback.
+
 - lightweight plugin to preview markdown within Notepad++
 - displaying rendered markdown HTML with **WebView2 Edge** (since 0.9.0) or an embedded IE11
 - can save rendered html to a file
@@ -17,7 +20,7 @@ Notepad++ interface language.
 
 ### Current Version
 
-The current fork version is **0.10.1**.
+The current fork version is **0.10.2**.
 
 The current upstream version is **0.9.3** and can be found [here](https://github.com/mohzy83/NppMarkdownPanel/releases).
 

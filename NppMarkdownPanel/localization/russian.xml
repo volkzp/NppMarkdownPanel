@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization language="ru">
+  <text key="menu.toggle_panel">Показать/скрыть &amp;панель</text>
+  <text key="menu.sync_caret">Синхронизация с позицией &amp;курсора</text>
+  <text key="menu.sync_first_visible">Синхронизация с &amp;первой видимой строкой редактора</text>
+  <text key="menu.show_outline">Показывать &amp;оглавление</text>
+  <text key="menu.settings">&amp;Настройки</text>
+  <text key="menu.help">&amp;Справка</text>
+  <text key="menu.about">&amp;О программе</text>
+  <text key="menu.export_pdf">Экспорт в &amp;PDF</text>
+  <text key="panel.title">Панель Markdown</text>
+  <text key="settings.title">Настройки</text>
+  <text key="settings.header">Настройки панели Markdown</text>
+  <text key="settings.save">Сохранить</text>
+  <text key="settings.cancel">Отмена</text>
+  <text key="settings.css_file">Файл CSS:</text>
+  <text key="settings.zoom_level">Масштаб:</text>
+  <text key="settings.dark_css_file">CSS тёмной темы:</text>
+  <text key="settings.extensions">Расширения файлов:</text>
+  <text key="settings.html_engine">Движок HTML:</text>
+  <text key="settings.formula_engine">Движок формул:</text>
+  <text key="settings.auto_save_html">Автоматически сохранять&#13;&#10;HTML предпросмотра&#13;&#10;в этот файл:</text>
+  <text key="settings.default">Сброс</text>
+  <text key="settings.allow_all_extensions">Разрешить все расширения файлов</text>
+  <text key="settings.files_without_extension">Включить просмотр файлов без расширения</text>
+  <text key="settings.auto_show_panel">Автоматически открывать панель для поддерживаемых файлов</text>
+  <text key="settings.show_toolbar">Показывать панель инструментов в окне просмотра</text>
+  <text key="settings.show_statusbar">Показывать строку состояния (просмотр ссылок)</text>
+  <text key="settings.three_state">Три состояния панели (закреплена → весь экран → скрыта)</text>
+  <text key="preview.title">Просмотр Markdown</text>
+  <text key="preview.save_as">Сохранить как...</text>
+  <text key="preview.save_light">Сохранить со светлой темой</text>
+  <text key="preview.copy">Копировать в буфер обмена</text>
+  <text key="preview.export_pdf">Экспорт в PDF</text>
+  <text key="preview.print">Печать</text>
+  <text key="preview.print_preview">Предпросмотр печати</text>
+  <text key="preview.outline">Оглавление</text>
+  <text key="preview.toggle_outline">Показать или скрыть оглавление</text>
+  <text key="preview.unsupported_extension"><![CDATA[<h3>Файл <u>{0}</u> имеет неподдерживаемое расширение.</h3><div>Допустимые расширения: {1}</div>]]></text>
+  <text key="filter.css">Файлы CSS (*.css)|*.css|Все файлы (*.*)|*.*</text>
+  <text key="filter.html">Файлы HTML (*.html, *.htm)|*.html;*.htm|Все файлы (*.*)|*.*</text>
+  <text key="filter.pdf">Файлы PDF (*.pdf)|*.pdf</text>
+  <text key="error.cannot_save">Не удалось сохранить файл в выбранное расположение!</text>
+  <text key="error.invalid_path">Недопустимый путь к файлу!</text>
+  <text key="about.title">О программе</text>
+  <text key="about.header">NppMarkdownPanel — О программе</text>
+  <text key="about.ok">ОК</text>
+  <text key="about.body"><![CDATA[NppMarkdownPanel для Notepad++
+
+Версия {0}
+
+Создан Mohzy и участниками проекта в 2019–2026 годах
+
+GitHub: https://github.com/mohzy83/NppMarkdownPanel
+
+Движки формул: KaTeX 0.16.22 и MathJax 3.2.2
+
+Полный перечень компонентов приведён в файле THIRD-PARTY-NOTICES.md.]]></text>
+</localization>

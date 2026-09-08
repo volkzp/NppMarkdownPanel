@@ -70,31 +70,27 @@ namespace NppMarkdownPanel.Forms
 
         private void ApplyLocalization()
         {
-            Text = PluginLocalization.Text("Settings", "Настройки");
-            label1.Text = PluginLocalization.Text("Markdown Panel Settings", "Настройки панели Markdown");
-            btnSave.Text = PluginLocalization.Text("Save", "Сохранить");
-            btnCancel.Text = PluginLocalization.Text("Cancel", "Отмена");
-            label2.Text = PluginLocalization.Text("CSS File:", "Файл CSS:");
-            label3.Text = PluginLocalization.Text("Zoom Level:", "Масштаб:");
-            label4.Text = PluginLocalization.Text("Darkmode CSS File:", "CSS тёмной темы:");
-            label5.Text = PluginLocalization.Text("Supported File Extensions:", "Расширения файлов:");
-            label6.Text = PluginLocalization.Text("HTML Rendering Engine:", "Движок HTML:");
-            labelMathRenderingEngine.Text = PluginLocalization.Text("Formula Rendering Engine:", "Движок формул:");
-            lblHtmlFile.Text = PluginLocalization.Text(
-                "Automatically Save\r\nHTML from Current\r\nPreview to this File:",
-                "Автоматически сохранять\r\nHTML предпросмотра\r\nв этот файл:");
-            btnDefaultCss.Text = PluginLocalization.Text("Default", "Сброс");
-            btnDefaultDarkmodeCss.Text = PluginLocalization.Text("Default", "Сброс");
-            btnResetHtml.Text = PluginLocalization.Text("Default", "Сброс");
-            btnDefaultFileExt.Text = PluginLocalization.Text("Default", "Сброс");
-            cbAllowAllExtensions.Text = PluginLocalization.Text("Allow all file extensions", "Разрешить все расширения файлов");
-            cbFilesWithNoExt.Text = PluginLocalization.Text("Enable preview for files without extension", "Включить просмотр файлов без расширения");
-            cbAutoShowPanel.Text = PluginLocalization.Text("Automatically show panel for supported files", "Автоматически открывать панель для поддерживаемых файлов");
-            cbShowToolbar.Text = PluginLocalization.Text("Show Toolbar in Preview Window", "Показывать панель инструментов в окне просмотра");
-            cbShowStatusbar.Text = PluginLocalization.Text("Show Statusbar in Preview Window (Preview Links)", "Показывать строку состояния (просмотр ссылок)");
-            cbEnableThreeStateToggle.Text = PluginLocalization.Text(
-                "Enable three-state toggle (docked → fullscreen → hidden)",
-                "Три состояния панели (закреплена → весь экран → скрыта)");
+            Text = PluginLocalization.Text("settings.title");
+            label1.Text = PluginLocalization.Text("settings.header");
+            btnSave.Text = PluginLocalization.Text("settings.save");
+            btnCancel.Text = PluginLocalization.Text("settings.cancel");
+            label2.Text = PluginLocalization.Text("settings.css_file");
+            label3.Text = PluginLocalization.Text("settings.zoom_level");
+            label4.Text = PluginLocalization.Text("settings.dark_css_file");
+            label5.Text = PluginLocalization.Text("settings.extensions");
+            label6.Text = PluginLocalization.Text("settings.html_engine");
+            labelMathRenderingEngine.Text = PluginLocalization.Text("settings.formula_engine");
+            lblHtmlFile.Text = PluginLocalization.Text("settings.auto_save_html");
+            btnDefaultCss.Text = PluginLocalization.Text("settings.default");
+            btnDefaultDarkmodeCss.Text = PluginLocalization.Text("settings.default");
+            btnResetHtml.Text = PluginLocalization.Text("settings.default");
+            btnDefaultFileExt.Text = PluginLocalization.Text("settings.default");
+            cbAllowAllExtensions.Text = PluginLocalization.Text("settings.allow_all_extensions");
+            cbFilesWithNoExt.Text = PluginLocalization.Text("settings.files_without_extension");
+            cbAutoShowPanel.Text = PluginLocalization.Text("settings.auto_show_panel");
+            cbShowToolbar.Text = PluginLocalization.Text("settings.show_toolbar");
+            cbShowStatusbar.Text = PluginLocalization.Text("settings.show_statusbar");
+            cbEnableThreeStateToggle.Text = PluginLocalization.Text("settings.three_state");
         }
 
         private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -143,9 +139,7 @@ namespace NppMarkdownPanel.Forms
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = PluginLocalization.Text(
-                    "CSS files (*.css)|*.css|All files (*.*)|*.*",
-                    "Файлы CSS (*.css)|*.css|Все файлы (*.*)|*.*");
+                openFileDialog.Filter = PluginLocalization.Text("filter.css");
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -207,9 +201,7 @@ namespace NppMarkdownPanel.Forms
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = PluginLocalization.Text(
-                    "HTML files (*.html, *.htm)|*.html;*.htm|All files (*.*)|*.*",
-                    "Файлы HTML (*.html, *.htm)|*.html;*.htm|Все файлы (*.*)|*.*");
+                saveFileDialog.Filter = PluginLocalization.Text("filter.html");
                 saveFileDialog.RestoreDirectory = true;
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {

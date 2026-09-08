@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<localization language="en">
+  <text key="menu.toggle_panel">Toggle &amp;Markdown Panel</text>
+  <text key="menu.sync_caret">Synchronize with &amp;caret position</text>
+  <text key="menu.sync_first_visible">Synchronize with &amp;first visible line in editor</text>
+  <text key="menu.show_outline">Show &amp;outline</text>
+  <text key="menu.settings">&amp;Settings</text>
+  <text key="menu.help">&amp;Help</text>
+  <text key="menu.about">&amp;About</text>
+  <text key="menu.export_pdf">Export to &amp;PDF</text>
+  <text key="panel.title">Markdown Panel</text>
+  <text key="settings.title">Settings</text>
+  <text key="settings.header">Markdown Panel Settings</text>
+  <text key="settings.save">Save</text>
+  <text key="settings.cancel">Cancel</text>
+  <text key="settings.css_file">CSS File:</text>
+  <text key="settings.zoom_level">Zoom Level:</text>
+  <text key="settings.dark_css_file">Darkmode CSS File:</text>
+  <text key="settings.extensions">Supported File Extensions:</text>
+  <text key="settings.html_engine">HTML Rendering Engine:</text>
+  <text key="settings.formula_engine">Formula Rendering Engine:</text>
+  <text key="settings.auto_save_html">Automatically Save&#13;&#10;HTML from Current&#13;&#10;Preview to this File:</text>
+  <text key="settings.default">Default</text>
+  <text key="settings.allow_all_extensions">Allow all file extensions</text>
+  <text key="settings.files_without_extension">Enable preview for files without extension</text>
+  <text key="settings.auto_show_panel">Automatically show panel for supported files</text>
+  <text key="settings.show_toolbar">Show Toolbar in Preview Window</text>
+  <text key="settings.show_statusbar">Show Statusbar in Preview Window (Preview Links)</text>
+  <text key="settings.three_state">Enable three-state toggle (docked → fullscreen → hidden)</text>
+  <text key="preview.title">Markdown Preview</text>
+  <text key="preview.save_as">Save As...</text>
+  <text key="preview.save_light">Save As (with Light Theme)</text>
+  <text key="preview.copy">Copy To Clipboard</text>
+  <text key="preview.export_pdf">Export to PDF</text>
+  <text key="preview.print">Print</text>
+  <text key="preview.print_preview">Print preview</text>
+  <text key="preview.outline">Outline</text>
+  <text key="preview.toggle_outline">Toggle outline</text>
+  <text key="preview.unsupported_extension"><![CDATA[<h3>The current file <u>{0}</u> has no valid Markdown file extension.</h3><div>Valid file extensions: {1}</div>]]></text>
+  <text key="filter.css">CSS files (*.css)|*.css|All files (*.*)|*.*</text>
+  <text key="filter.html">HTML files (*.html, *.htm)|*.html;*.htm|All files (*.*)|*.*</text>
+  <text key="filter.pdf">PDF files (*.pdf)|*.pdf</text>
+  <text key="error.cannot_save">Can't save {0}file to selected location!</text>
+  <text key="error.invalid_path">Invalid path for {0}!</text>
+  <text key="about.title">About</text>
+  <text key="about.header">NppMarkdownPanel - About</text>
+  <text key="about.ok">OK</text>
+  <text key="about.body"><![CDATA[NppMarkdownPanel for Notepad++
+
+Version {0}
+
+Created by Mohzy and contributors, 2019-2026
+
+GitHub: https://github.com/mohzy83/NppMarkdownPanel
+
+Formula renderers: KaTeX 0.16.22 and MathJax 3.2.2
+
+The complete list of components is available in THIRD-PARTY-NOTICES.md.]]></text>
+</localization>
