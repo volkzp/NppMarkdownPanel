@@ -47,6 +47,7 @@
     <Compile Include="Markdig\YamlFrontMatter\YamlFrontMatterAsCodeBlockExtension.cs" />
     <Compile Include="Markdig\SyntaxHighlighting\LanguageTypeAdapter.cs" />
     <Compile Include="MarkdigMarkdownGenerator.cs" />
+    <Compile Include="MathDelimiterProtector.cs" />
     <Compile Include="Markdig\SyntaxHighlighting\SyntaxHighlightingCodeBlockRenderer.cs" />
     <Compile Include="Markdig\SyntaxHighlighting\SyntaxHighlightingExtension.cs" />
     <Compile Include="Markdig\SyntaxHighlighting\SyntaxHighlightingExtensions.cs" />

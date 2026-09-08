@@ -1,6 +1,7 @@
 # LaTeX Math Rendering Test
 
-Math is rendered with MathJax v3 (tex-svg) from a CDN.
+Math is rendered with the bundled MathJax v3 `tex-svg-full` component and does
+not require an internet connection.
 
 ## Inline formulas
 
@@ -44,3 +45,12 @@ A = \pi r^2
 $$
 
 An inline reference \(e^{i\pi} + 1 = 0\) (Euler's identity).
+
+## Literal examples
+
+Formula delimiters inside code must remain unchanged and must not be rendered:
+
+```text
+$not_math$
+\(also_not_math\)
+```

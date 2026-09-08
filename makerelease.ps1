@@ -8,7 +8,7 @@ Copy-Item -Force -Recurse -Path Webview2Viewer\bin\Release\runtimes\ -Destinatio
 function makeReleaseZip($filename, $targetPlattform)
 {
 	$zipName = "Release\NppMarkdownPanel-" + (Get-Item $filename).VersionInfo.FileVersion + "-" + $targetPlattform + ".zip"
-	Compress-Archive -LiteralPath $filename, 'Release\lib\', 'README.md', 'help\', 'License.txt', "NppMarkdownPanel\style.css" , "NppMarkdownPanel\style-dark.css" -DestinationPath $zipName -Force
+	Compress-Archive -LiteralPath $filename, 'Release\lib\', 'README.md', 'help\', 'License.txt', 'THIRD-PARTY-NOTICES.md', "NppMarkdownPanel\style.css" , "NppMarkdownPanel\style-dark.css", "NppMarkdownPanel\mathjax\" -DestinationPath $zipName -Force
 }
 
 makeReleaseZip "NppMarkdownPanel\bin\Release\NppMarkdownPanel.dll" "x86"

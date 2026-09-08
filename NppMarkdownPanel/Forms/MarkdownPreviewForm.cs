@@ -30,15 +30,13 @@ namespace NppMarkdownPanel.Forms
                     <script>
                     if(typeof mermaid!=='undefined'){{mermaid.initialize({{ startOnLoad: false }});}}
                     </script>
-                    <script>
-                    window.MathJax = {{ tex: {{ inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] }} }};
-                    </script>
-                    <script src=""https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"" onerror=""this.remove();""></script>
+MATHJAX_HEAD_PLACEHOLDER
                 </head>
                 <body class=""markdown-body"" style=""{2}"">
                 {3}
                 <script>
                 if(typeof mermaid!=='undefined'){{mermaid.run();}}
+                if(window.typesetMath){{window.typesetMath(document.body);}}
                 </script>
                 </body>
             </html>
@@ -58,10 +56,7 @@ namespace NppMarkdownPanel.Forms
                     <script>
                     if(typeof mermaid!=='undefined'){{mermaid.initialize({{ startOnLoad: false }});}}
                     </script>
-                    <script>
-                    window.MathJax = {{ tex: {{ inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] }} }};
-                    </script>
-                    <script src=""https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"" onerror=""this.remove();""></script>
+MATHJAX_HEAD_PLACEHOLDER
                 </head>
                 <body class=""outline-enabled"" style=""{2}"">
                     <nav id=""outline-sidebar"" class=""outline-sidebar"">
@@ -73,10 +68,33 @@ namespace NppMarkdownPanel.Forms
 OUTLINE_SCRIPT_PLACEHOLDER
                     <script>
                     if(typeof mermaid!=='undefined'){{mermaid.run();}}
+                    if(window.typesetMath){{window.typesetMath(document.getElementById('outline-main'));}}
                     </script>
                 </body>
             </html>
             ";
+
+        const string MATHJAX_HEAD = @"
+                    <script>
+                    window.MathJax = {
+                        tex: {
+                            inlineMath: [['\\(','\\)'], ['$','$']],
+                            displayMath: [['\\[','\\]'], ['$$','$$']],
+                            processEscapes: true
+                        },
+                        svg: { fontCache: 'local' },
+                        startup: { typeset: false }
+                    };
+                    </script>
+                    <script>MATHJAX_SCRIPT_PLACEHOLDER</script>
+                    <script>
+                    window.typesetMath = function(root) {
+                        if (!root || !window.MathJax || !MathJax.startup || !MathJax.typesetPromise) return Promise.resolve();
+                        return MathJax.startup.promise
+                            .then(function() { return MathJax.typesetPromise([root]); })
+                            .catch(function(error) { console.error('MathJax typesetting failed:', error); });
+                    };
+                    </script>";
 
         const string OUTLINE_SCRIPT = @"<script>
 (function(){
@@ -290,7 +308,7 @@ OUTLINE_SCRIPT_PLACEHOLDER
             if (!IsValidFileExtension(currentFilePath))
             {
                 var invalidExtensionMessageBody = string.Format(MSG_NO_SUPPORTED_FILE_EXT, Path.GetFileName(filepath), settings.SupportedFileExt);
-                var invalidExtensionMessage = string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, invalidExtensionMessageBody);
+                var invalidExtensionMessage = InjectMathJax(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, invalidExtensionMessageBody));
                 if (settings.ShowOutline)
                     invalidExtensionMessage = InjectOutlineScript(invalidExtensionMessage);
 
@@ -300,9 +318,9 @@ OUTLINE_SCRIPT_PLACEHOLDER
             var resultForBrowser = markdownService.ConvertToHtml(currentText, filepath, true);
             var resultForExport = markdownService.ConvertToHtml(currentText, null, false);
 
-            var markdownHtmlBrowser = string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, resultForBrowser);
-            var markdownHtmlFileExport = string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, resultForExport);
-            var markdownHtmlFileExportWithLightTheme = string.Format(htmlTemplate, Path.GetFileName(filepath), GetCssContent(true), defaultBodyStyle, resultForExport);
+            var markdownHtmlBrowser = InjectMathJax(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, resultForBrowser));
+            var markdownHtmlFileExport = InjectMathJax(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, resultForExport));
+            var markdownHtmlFileExportWithLightTheme = InjectMathJax(string.Format(htmlTemplate, Path.GetFileName(filepath), GetCssContent(true), defaultBodyStyle, resultForExport));
 
             if (settings.ShowOutline)
             {
@@ -312,6 +330,12 @@ OUTLINE_SCRIPT_PLACEHOLDER
             }
 
             return new RenderResult(markdownHtmlBrowser, markdownHtmlFileExport, resultForBrowser, markdownStyleContent, markdownHtmlFileExportWithLightTheme);
+        }
+
+        private static string InjectMathJax(string html)
+        {
+            var mathJaxHead = MATHJAX_HEAD.Replace("MATHJAX_SCRIPT_PLACEHOLDER", MathJaxAssets.Script);
+            return html.Replace("MATHJAX_HEAD_PLACEHOLDER", mathJaxHead);
         }
 
         private string GetCssContent(bool forceLightTheme = false)

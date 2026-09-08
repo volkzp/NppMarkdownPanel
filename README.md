@@ -1,6 +1,10 @@
 # MarkdownPanel for Notepad++
 Plugin to preview Markdown files in Notepad++
 
+This fork adds offline LaTeX-style math rendering with bundled MathJax 3.2.2.
+It supports `$...$`, `$$...$$`, `\\(...\\)` and `\\[...\\]` delimiters and
+re-typesets formulas after live preview updates.
+
 - lightweight plugin to preview markdown within Notepad++
 - displaying rendered markdown HTML with **WebView2 Edge** (since 0.9.0) or an embedded IE11
 - can save rendered html to a file

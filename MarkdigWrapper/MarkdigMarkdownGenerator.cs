@@ -19,9 +19,6 @@ namespace MarkdigWrapper
     {
         private static readonly HtmlSanitizer htmlSanitizer = new HtmlSanitizer();
 
-        private static readonly Regex latexDisplayMathRegex = new Regex(@"(?<!\\)\\\[(?<content>[\s\S]*?)(?<!\\)\\\]");
-        private static readonly Regex latexInlineMathRegex = new Regex(@"(?<!\\)\\\((?<content>[^\r\n]*?)(?<!\\)\\\)");
-
         public MarkdigMarkdownGenerator()
         {
             htmlSanitizer.AllowedAttributes.Add("data-line");
@@ -32,6 +29,7 @@ namespace MarkdigWrapper
 
         public string ConvertToHtml(string markDownText, string filepath, bool supportEscapeCharsInUris)
         {
+            var protectedMarkdown = MathDelimiterProtector.Protect(markDownText);
             var sb = new StringBuilder();
             var htmlWriter = new StringWriter(sb);
             var htmlRenderer = new HtmlRenderer(htmlWriter);
@@ -67,8 +65,7 @@ namespace MarkdigWrapper
 
             try
             {
-                markDownText = ConvertLatexMathDelimiters(markDownText);
-                var document = Markdown.Parse(markDownText, pipeline, null);
+                var document = Markdown.Parse(protectedMarkdown.Markdown, pipeline, null);
 
                 SetLineNoAttributeOnAllBlocks(document);
 
@@ -88,21 +85,8 @@ namespace MarkdigWrapper
             if (supportEscapeCharsInUris) result = UnescapeImageUris(result);
             if (supportEscapeCharsInUris) result = UnescapeAnchorUris(result);
             result = htmlSanitizer.Sanitize(result);
+            result = protectedMarkdown.RestoreIntoHtml(result);
             return result;
-        }
-
-        /// <summary>
-        /// Converts LaTeX math delimiters into the $...$ / $$...$$ form understood by
-        /// Markdig's math extension, so that \(...\) and \[...\] are rendered as math
-        /// instead of being eaten by Markdown backslash escaping.
-        /// </summary>
-        private string ConvertLatexMathDelimiters(string markdown)
-        {
-            // Block math \[ ... \] -> $$ ... $$
-            markdown = latexDisplayMathRegex.Replace(markdown, m => "$$" + m.Groups["content"].Value + "$$");
-            // Inline math \( ... \) -> $ ... $
-            markdown = latexInlineMathRegex.Replace(markdown, m => "$" + m.Groups["content"].Value + "$");
-            return markdown;
         }
 
         private void SetLineNoAttributeOnAllBlocks(ContainerBlock rootBlock)
