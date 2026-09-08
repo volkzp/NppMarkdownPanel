@@ -22,6 +22,19 @@ The current version is **0.9.3** it can be found [here](https://github.com/mohzy
 ## Prerequisites
 - .NET 4.7.2 or higher
 
+## Building the fork
+
+Run the following commands in Windows PowerShell from the repository root:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+.\build.ps1
+.\makerelease.ps1
+```
+
+The build verifies the six native exports required by Notepad++ for both x86
+and x64 before creating release archives.
+
 ## Installation
 ### Installation in Notepad++ 
 The plugin can be installed with the Notepad++ Plugin Admin.
