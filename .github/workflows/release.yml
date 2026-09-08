@@ -24,6 +24,7 @@ jobs:
           node tests/katex-smoke.js
           node tests/localization-smoke.js
           node tests/math-engine-settings-smoke.js
+          node tests/loader-wiring-smoke.js
 
       - name: Build release packages
         shell: pwsh

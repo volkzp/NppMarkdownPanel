@@ -81,7 +81,13 @@ namespace NppMarkdownPanel
             var module = di.GetFiles().FirstOrDefault(i => i.Name == modulename + ".dll");
             if (module != null)
             {
-                return Assembly.LoadFrom(module.FullName);
+                // Plugin packages downloaded as ZIP files can retain the
+                // Mark-of-the-Web on extracted DLLs. LoadFrom rejects those
+                // files with HRESULT 0x80131515, even though they reside in
+                // this plugin's trusted lib directory. UnsafeLoadFrom keeps
+                // the assembly location required by WebView2 while bypassing
+                // that legacy CAS zone check.
+                return Assembly.UnsafeLoadFrom(module.FullName);
             }
             return null;
         }
