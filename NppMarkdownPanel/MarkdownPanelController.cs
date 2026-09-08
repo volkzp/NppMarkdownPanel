@@ -160,8 +160,19 @@ namespace NppMarkdownPanel
             if (notification.Header.Code == (uint)NppMsg.NPPN_READY)
             {
                 nppReady = true;
+                PluginLocalization.RefreshFromNotepad();
+                ApplyMenuLocalization();
+                viewerInterface.UpdateSettings(settings, OpenLocalFileInNpp);
                 var currentFilePath = notepadPPGateway.GetCurrentFilePath();
                 AutoShowOrHidePanel(currentFilePath);
+            }
+
+            if (notification.Header.Code == (uint)NppMsg.NPPN_NATIVELANGCHANGED)
+            {
+                PluginLocalization.RefreshFromNotepad();
+                ApplyMenuLocalization();
+                viewerInterface.UpdateSettings(settings, OpenLocalFileInNpp);
+                if (isPanelVisible) RenderMarkdownDirect();
             }
 
             if (notification.Header.Code == (uint)NppMsg.NPPN_FILEBEFORESAVE)
@@ -360,21 +371,52 @@ namespace NppMarkdownPanel
 
         public void InitCommandMenu()
         {
+            PluginLocalization.RefreshFromNotepad();
             syncViewWithCaretPosition = (Win32.GetPrivateProfileInt("Options", "SyncViewWithCaretPosition", 0, iniFilePath) != 0);
             syncViewWithFirstVisibleLine = (Win32.GetPrivateProfileInt("Options", "SyncWithFirstVisibleLine", 0, iniFilePath) != 0);
             showOutline = PluginUtils.ReadIniBool("Options", "ShowOutline", iniFilePath, false);
-            PluginBase.SetCommand(0, "Toggle &Markdown Panel", TogglePanelVisible);
+            PluginBase.SetCommand(0, PluginLocalization.Text("Toggle &Markdown Panel", "Показать/скрыть &панель"), TogglePanelVisible);
             PluginBase.SetCommand(1, "---", null);
-            PluginBase.SetCommand(2, "Synchronize with &caret position", SyncViewWithCaret, syncViewWithCaretPosition);
-            PluginBase.SetCommand(3, "Synchronize with &first visible line in editor", SyncViewWithFirstVisibleLine, syncViewWithFirstVisibleLine);
-            PluginBase.SetCommand(4, "Show &outline", ToggleShowOutline, showOutline);
+            PluginBase.SetCommand(2, PluginLocalization.Text("Synchronize with &caret position", "Синхронизация с позицией &курсора"), SyncViewWithCaret, syncViewWithCaretPosition);
+            PluginBase.SetCommand(3, PluginLocalization.Text("Synchronize with &first visible line in editor", "Синхронизация с &первой видимой строкой редактора"), SyncViewWithFirstVisibleLine, syncViewWithFirstVisibleLine);
+            PluginBase.SetCommand(4, PluginLocalization.Text("Show &outline", "Показывать &оглавление"), ToggleShowOutline, showOutline);
             PluginBase.SetCommand(5, "---", null);
-            PluginBase.SetCommand(6, "&Settings", EditSettings);
-            PluginBase.SetCommand(7, "&Help", ShowHelp);
-            PluginBase.SetCommand(8, "&About", ShowAboutDialog);
+            PluginBase.SetCommand(6, PluginLocalization.Text("&Settings", "&Настройки"), EditSettings);
+            PluginBase.SetCommand(7, PluginLocalization.Text("&Help", "&Справка"), ShowHelp);
+            PluginBase.SetCommand(8, PluginLocalization.Text("&About", "&О программе"), ShowAboutDialog);
             PluginBase.SetCommand(9, "---", null);
-            PluginBase.SetCommand(10, "Export to &PDF", ExportToPdf);
+            PluginBase.SetCommand(10, PluginLocalization.Text("Export to &PDF", "Экспорт в &PDF"), ExportToPdf);
             idMyDlg = 0;
+        }
+
+        private void ApplyMenuLocalization()
+        {
+            PluginBase._funcItems.RefreshItems();
+            string[] english =
+            {
+                "Toggle &Markdown Panel", "---", "Synchronize with &caret position",
+                "Synchronize with &first visible line in editor", "Show &outline", "---",
+                "&Settings", "&Help", "&About", "---", "Export to &PDF"
+            };
+            string[] russian =
+            {
+                "Показать/скрыть &панель", "---", "Синхронизация с позицией &курсора",
+                "Синхронизация с &первой видимой строкой редактора", "Показывать &оглавление", "---",
+                "&Настройки", "&Справка", "&О программе", "---", "Экспорт в &PDF"
+            };
+
+            string[] labels = PluginLocalization.IsRussian ? russian : english;
+            IntPtr mainMenu = Win32.GetMenu(PluginBase.nppData._nppHandle);
+            for (int index = 0; index < PluginBase._funcItems.Items.Count && index < labels.Length; index++)
+            {
+                if (labels[index] == "---") continue;
+                Win32.SetMenuItemText(mainMenu, PluginBase._funcItems.Items[index]._cmdID, labels[index]);
+            }
+
+            Win32.CheckMenuItem(mainMenu, PluginBase._funcItems.Items[2]._cmdID, Win32.MF_BYCOMMAND | (syncViewWithCaretPosition ? Win32.MF_CHECKED : Win32.MF_UNCHECKED));
+            Win32.CheckMenuItem(mainMenu, PluginBase._funcItems.Items[3]._cmdID, Win32.MF_BYCOMMAND | (syncViewWithFirstVisibleLine ? Win32.MF_CHECKED : Win32.MF_UNCHECKED));
+            Win32.CheckMenuItem(mainMenu, PluginBase._funcItems.Items[4]._cmdID, Win32.MF_BYCOMMAND | (showOutline ? Win32.MF_CHECKED : Win32.MF_UNCHECKED));
+            Win32.DrawMenuBar(PluginBase.nppData._nppHandle);
         }
 
         private void EditSettings()
@@ -562,7 +604,7 @@ namespace NppMarkdownPanel
 
                 NppTbData _nppTbData = new NppTbData();
                 _nppTbData.hClient = viewerInterface.Handle;
-                _nppTbData.pszName = Main.PluginTitle;
+                _nppTbData.pszName = PluginLocalization.Text(Main.PluginTitle, "Панель Markdown");
                 _nppTbData.dlgID = idMyDlg;
                 _nppTbData.uMask = NppTbMsg.DWS_DF_CONT_RIGHT | NppTbMsg.DWS_ICONTAB | NppTbMsg.DWS_ICONBAR;
                 _icon = ConvertBitmapToIcon(Properties.Resources.markdown_16x16_solid_bmp);

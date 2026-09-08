@@ -106,6 +106,7 @@
     <Compile Include="MarkdownPanelController.cs" />
     <Compile Include="Generator\MarkdownService.cs" />
     <Compile Include="Generator\MathJaxAssets.cs" />
+    <Compile Include="PluginLocalization.cs" />
     <Compile Include="PluginInfrastructure\ClikeStringArray.cs" />
     <Compile Include="PluginInfrastructure\DllExport\DllExportAttribute.cs" />
     <Compile Include="PluginInfrastructure\Win32.cs" />

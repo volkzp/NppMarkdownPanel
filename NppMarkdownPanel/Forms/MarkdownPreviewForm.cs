@@ -18,7 +18,7 @@ namespace NppMarkdownPanel.Forms
     {
         const string DEFAULT_HTML_BASE =
          @"<!DOCTYPE html>
-            <html>
+            <html lang=""@@NPP_LANG@@"">
                 <head>                    
                     <meta http-equiv=""X-UA-Compatible"" content=""IE=edge""></meta>
                     <meta http-equiv=""content-type"" content=""text/html; charset=utf-8""></meta>
@@ -44,7 +44,7 @@ MATHJAX_HEAD_PLACEHOLDER
 
         const string OUTLINE_HTML_BASE =
          @"<!DOCTYPE html>
-            <html>
+            <html lang=""@@NPP_LANG@@"">
                 <head>                    
                     <meta http-equiv=""X-UA-Compatible"" content=""IE=edge""></meta>
                     <meta http-equiv=""content-type"" content=""text/html; charset=utf-8""></meta>
@@ -60,11 +60,11 @@ MATHJAX_HEAD_PLACEHOLDER
                 </head>
                 <body class=""outline-enabled"" style=""{2}"">
                     <nav id=""outline-sidebar"" class=""outline-sidebar"">
-                        <div class=""outline-header"">Outline</div>
+                        <div class=""outline-header"">@@OUTLINE_TEXT@@</div>
                         <div id=""outline-content"" class=""outline-content""></div>
                     </nav>
                     <div id=""outline-main"" class=""outline-main markdown-body"">{3}</div>
-                    <button id=""outline-toggle"" class=""outline-toggle"" title=""Toggle Outline"" onclick=""document.getElementById('outline-sidebar').classList.toggle('collapsed');this.classList.toggle('collapsed');"">&#9776;</button>
+                    <button id=""outline-toggle"" class=""outline-toggle"" title=""@@OUTLINE_TITLE@@"" onclick=""document.getElementById('outline-sidebar').classList.toggle('collapsed');this.classList.toggle('collapsed');"">&#9776;</button>
 OUTLINE_SCRIPT_PLACEHOLDER
                     <script>
                     if(typeof mermaid!=='undefined'){{mermaid.run();}}
@@ -156,7 +156,8 @@ OUTLINE_SCRIPT_PLACEHOLDER
 })();
 </script>";
 
-        const string MSG_NO_SUPPORTED_FILE_EXT = "<h3>The current file <u>{0}</u> has no valid Markdown file extension.</h3><div>Valid file extensions:{1}</div>";
+        const string MSG_NO_SUPPORTED_FILE_EXT = "<h3>The current file <u>{0}</u> has no valid Markdown file extension.</h3><div>Valid file extensions: {1}</div>";
+        const string MSG_NO_SUPPORTED_FILE_EXT_RU = "<h3>Файл <u>{0}</u> имеет неподдерживаемое расширение.</h3><div>Допустимые расширения: {1}</div>";
 
         private Task<RenderResult> renderTask;
         private int renderGeneration;
@@ -194,6 +195,7 @@ OUTLINE_SCRIPT_PLACEHOLDER
         public void UpdateSettings(Settings newSettings, Action<string> openLocalFileInNppAction)
         {
             this.settings = newSettings;
+            ApplyLocalization();
 
             var isDarkModeEnabled = newSettings.IsDarkModeEnabled;
             if (isDarkModeEnabled)
@@ -248,6 +250,8 @@ OUTLINE_SCRIPT_PLACEHOLDER
         private MarkdownPreviewForm(Settings settings, ActionRef<Message> wndProcCallback)
         {
             InitializeComponent();
+            PluginLocalization.LanguageChanged += ApplyLocalization;
+            ApplyLocalization();
 
             this.wndProcCallback = wndProcCallback;
             markdownService = new MarkdownService(new MarkdigWrapper.MarkdigWrapper());
@@ -307,7 +311,10 @@ OUTLINE_SCRIPT_PLACEHOLDER
 
             if (!IsValidFileExtension(currentFilePath))
             {
-                var invalidExtensionMessageBody = string.Format(MSG_NO_SUPPORTED_FILE_EXT, Path.GetFileName(filepath), settings.SupportedFileExt);
+                var invalidExtensionMessageBody = string.Format(
+                    PluginLocalization.Text(MSG_NO_SUPPORTED_FILE_EXT, MSG_NO_SUPPORTED_FILE_EXT_RU),
+                    Path.GetFileName(filepath),
+                    settings.SupportedFileExt);
                 var invalidExtensionMessage = InjectMathJax(string.Format(htmlTemplate, Path.GetFileName(filepath), markdownStyleContent, defaultBodyStyle, invalidExtensionMessageBody));
                 if (settings.ShowOutline)
                     invalidExtensionMessage = InjectOutlineScript(invalidExtensionMessage);
@@ -335,7 +342,28 @@ OUTLINE_SCRIPT_PLACEHOLDER
         private static string InjectMathJax(string html)
         {
             var mathJaxHead = MATHJAX_HEAD.Replace("MATHJAX_SCRIPT_PLACEHOLDER", MathJaxAssets.Script);
-            return html.Replace("MATHJAX_HEAD_PLACEHOLDER", mathJaxHead);
+            return LocalizeHtml(html.Replace("MATHJAX_HEAD_PLACEHOLDER", mathJaxHead));
+        }
+
+        private void ApplyLocalization()
+        {
+            Text = PluginLocalization.Text("Markdown Preview", "Просмотр Markdown");
+            btnSaveHtml.Text = PluginLocalization.Text("Save As...", "Сохранить как...");
+            btnSaveWithLightTheme.Text = PluginLocalization.Text("Save As (with Light Theme)", "Сохранить со светлой темой");
+            btnCopyToClipboard.Text = PluginLocalization.Text("Copy To Clipboard", "Копировать в буфер обмена");
+            btnExportToPdf.Text = PluginLocalization.Text("Export to PDF", "Экспорт в PDF");
+            btnPrint.Text = PluginLocalization.Text("Print", "Печать");
+            btnPrint.ToolTipText = PluginLocalization.Text("Print preview", "Предпросмотр печати");
+        }
+
+        private static string LocalizeHtml(string html)
+        {
+            if (String.IsNullOrEmpty(html)) return html;
+
+            return html
+                .Replace("@@NPP_LANG@@", PluginLocalization.IsRussian ? "ru" : "en")
+                .Replace("@@OUTLINE_TEXT@@", PluginLocalization.Text("Outline", "Оглавление"))
+                .Replace("@@OUTLINE_TITLE@@", PluginLocalization.Text("Toggle outline", "Показать или скрыть оглавление"));
         }
 
         private string GetCssContent(bool forceLightTheme = false)
@@ -460,7 +488,9 @@ OUTLINE_SCRIPT_PLACEHOLDER
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = "html files (*.html, *.htm)|*.html;*.htm|All files (*.*)|*.*";
+                saveFileDialog.Filter = PluginLocalization.Text(
+                    "HTML files (*.html, *.htm)|*.html;*.htm|All files (*.*)|*.*",
+                    "Файлы HTML (*.html, *.htm)|*.html;*.htm|Все файлы (*.*)|*.*");
                 saveFileDialog.RestoreDirectory = true;
                 saveFileDialog.InitialDirectory = Path.GetDirectoryName(currentFilePath);
                 saveFileDialog.FileName = Path.GetFileNameWithoutExtension(currentFilePath);
@@ -520,6 +550,7 @@ OUTLINE_SCRIPT_PLACEHOLDER
         public void Cleanup()
         {
             cleanupStarted = true;
+            PluginLocalization.LanguageChanged -= ApplyLocalization;
             if (renderTask != null)
             {
                 renderTask.Wait();
@@ -548,7 +579,7 @@ OUTLINE_SCRIPT_PLACEHOLDER
 
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = "pdf files (*.pdf)|*.pdf";
+                saveFileDialog.Filter = PluginLocalization.Text("PDF files (*.pdf)|*.pdf", "Файлы PDF (*.pdf)|*.pdf");
                 saveFileDialog.RestoreDirectory = true;
                 saveFileDialog.InitialDirectory = Path.GetDirectoryName(currentFilePath);
                 saveFileDialog.FileName = Path.GetFileNameWithoutExtension(currentFilePath);

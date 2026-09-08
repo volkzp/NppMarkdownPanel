@@ -297,6 +297,7 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
         public static extern bool WritePrivateProfileString(string lpAppName, string lpKeyName, string lpString, string lpFileName);
 
         public const int MF_BYCOMMAND = 0;
+        public const int MF_STRING = 0;
         public const int MF_CHECKED = 8;
         public const int MF_UNCHECKED = 0;
         public const int MF_ENABLED = 0;
@@ -307,10 +308,46 @@ namespace Kbg.NppPluginNET.PluginInfrastructure
         public static extern IntPtr GetMenu(IntPtr hWnd);
 
         [DllImport("user32")]
+        private static extern int GetMenuItemCount(IntPtr hMenu);
+
+        [DllImport("user32")]
+        private static extern IntPtr GetSubMenu(IntPtr hMenu, int nPos);
+
+        [DllImport("user32")]
+        private static extern uint GetMenuItemID(IntPtr hMenu, int nPos);
+
+        [DllImport("user32", CharSet = CharSet.Unicode)]
+        private static extern bool ModifyMenu(IntPtr hMenu, uint uPosition, uint uFlags, UIntPtr uIDNewItem, string lpNewItem);
+
+        [DllImport("user32")]
+        public static extern bool DrawMenuBar(IntPtr hWnd);
+
+        [DllImport("user32")]
         public static extern int CheckMenuItem(IntPtr hMenu, int uIDCheckItem, int uCheck);
 
         [DllImport("user32")]
         public static extern bool EnableMenuItem(IntPtr hMenu, int uIDEnableItem, int uEnable);
+
+        public static bool SetMenuItemText(IntPtr hMenu, int commandId, string text)
+        {
+            int itemCount = GetMenuItemCount(hMenu);
+            for (int position = 0; position < itemCount; position++)
+            {
+                if (GetMenuItemID(hMenu, position) == (uint)commandId)
+                {
+                    return ModifyMenu(
+                        hMenu,
+                        (uint)commandId,
+                        MF_BYCOMMAND | MF_STRING,
+                        new UIntPtr((uint)commandId),
+                        text);
+                }
+
+                IntPtr subMenu = GetSubMenu(hMenu, position);
+                if (subMenu != IntPtr.Zero && SetMenuItemText(subMenu, commandId, text)) return true;
+            }
+            return false;
+        }
 
         public const int WM_CREATE = 1;
         public const int WM_NOTIFY = 0x004e;

@@ -50,7 +50,9 @@ namespace NppMarkdownPanel
             {
                 validFilePath = Path.GetFullPath(file);                             // Convert file name to the full path
                 if (!IsDirectoryWritable(Path.GetDirectoryName(validFilePath)))     // Ensure that it's possible to write to chosen file
-                    errorText = $"Can't save {pWithSpace}file to selected location!";
+                    errorText = PluginLocalization.Text(
+                        $"Can't save {pWithSpace}file to selected location!",
+                        "Не удалось сохранить файл в выбранное расположение!");
                 FileInfo fi = null;
                 try
                 {
@@ -62,7 +64,7 @@ namespace NppMarkdownPanel
                 if (fi is null || !String.IsNullOrEmpty(errorText))
                 {
                     if (String.IsNullOrEmpty(errorText))
-                        errorText = $"Invalid Path for {purpose}!";
+                        errorText = PluginLocalization.Text($"Invalid Path for {purpose}!", "Недопустимый путь к файлу!");
                     return false;
                 }
                 else
@@ -72,7 +74,7 @@ namespace NppMarkdownPanel
             }
             catch (Exception)
             {
-                errorText = $"Invalid Path for {purpose}!";
+                errorText = PluginLocalization.Text($"Invalid Path for {purpose}!", "Недопустимый путь к файлу!");
                 validFilePath = null;
                 return false;
             }

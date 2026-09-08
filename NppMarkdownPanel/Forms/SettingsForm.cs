@@ -36,6 +36,9 @@ namespace NppMarkdownPanel.Forms
             EnableThreeStateToggle = settings.EnableThreeStateToggle;
 
             InitializeComponent();
+            PluginLocalization.LanguageChanged += ApplyLocalization;
+            FormClosed += SettingsForm_FormClosed;
+            ApplyLocalization();
 
             trackBar1.Value = ZoomLevel;
             lblZoomValue.Text = $"{ZoomLevel}%";
@@ -58,6 +61,39 @@ namespace NppMarkdownPanel.Forms
             {
                 comboRenderingEngine.SelectedIndex = 0;
             }
+        }
+
+        private void ApplyLocalization()
+        {
+            Text = PluginLocalization.Text("Settings", "Настройки");
+            label1.Text = PluginLocalization.Text("Markdown Panel Settings", "Настройки панели Markdown");
+            btnSave.Text = PluginLocalization.Text("Save", "Сохранить");
+            btnCancel.Text = PluginLocalization.Text("Cancel", "Отмена");
+            label2.Text = PluginLocalization.Text("CSS File:", "Файл CSS:");
+            label3.Text = PluginLocalization.Text("Zoom Level:", "Масштаб:");
+            label4.Text = PluginLocalization.Text("Darkmode CSS File:", "CSS тёмной темы:");
+            label5.Text = PluginLocalization.Text("Supported File Extensions:", "Расширения файлов:");
+            label6.Text = PluginLocalization.Text("HTML Rendering Engine:", "Движок HTML:");
+            lblHtmlFile.Text = PluginLocalization.Text(
+                "Automatically Save\r\nHTML from Current\r\nPreview to this File:",
+                "Автоматически сохранять\r\nHTML предпросмотра\r\nв этот файл:");
+            btnDefaultCss.Text = PluginLocalization.Text("Default", "Сброс");
+            btnDefaultDarkmodeCss.Text = PluginLocalization.Text("Default", "Сброс");
+            btnResetHtml.Text = PluginLocalization.Text("Default", "Сброс");
+            btnDefaultFileExt.Text = PluginLocalization.Text("Default", "Сброс");
+            cbAllowAllExtensions.Text = PluginLocalization.Text("Allow all file extensions", "Разрешить все расширения файлов");
+            cbFilesWithNoExt.Text = PluginLocalization.Text("Enable preview for files without extension", "Включить просмотр файлов без расширения");
+            cbAutoShowPanel.Text = PluginLocalization.Text("Automatically show panel for supported files", "Автоматически открывать панель для поддерживаемых файлов");
+            cbShowToolbar.Text = PluginLocalization.Text("Show Toolbar in Preview Window", "Показывать панель инструментов в окне просмотра");
+            cbShowStatusbar.Text = PluginLocalization.Text("Show Statusbar in Preview Window (Preview Links)", "Показывать строку состояния (просмотр ссылок)");
+            cbEnableThreeStateToggle.Text = PluginLocalization.Text(
+                "Enable three-state toggle (docked → fullscreen → hidden)",
+                "Три состояния панели (закреплена → весь экран → скрыта)");
+        }
+
+        private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            PluginLocalization.LanguageChanged -= ApplyLocalization;
         }
 
         private void trackBar1_ValueChanged(object sender, EventArgs e)
@@ -101,7 +137,9 @@ namespace NppMarkdownPanel.Forms
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "css files (*.css)|*.css|All files (*.*)|*.*";
+                openFileDialog.Filter = PluginLocalization.Text(
+                    "CSS files (*.css)|*.css|All files (*.*)|*.*",
+                    "Файлы CSS (*.css)|*.css|Все файлы (*.*)|*.*");
                 openFileDialog.RestoreDirectory = true;
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -163,7 +201,9 @@ namespace NppMarkdownPanel.Forms
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = "html files (*.html, *.htm)|*.html;*.htm|All files (*.*)|*.*";
+                saveFileDialog.Filter = PluginLocalization.Text(
+                    "HTML files (*.html, *.htm)|*.html;*.htm|All files (*.*)|*.*",
+                    "Файлы HTML (*.html, *.htm)|*.html;*.htm|Все файлы (*.*)|*.*");
                 saveFileDialog.RestoreDirectory = true;
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
